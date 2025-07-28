@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="708af600417b440da909ed0300ebf341" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="PersonelBilgiFormu2Model.Belgeler" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PersonelBilgiFormu2Model.IsBilgisi" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="PersonelBilgiFormu2Model.OkulBilgisi" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PersonelBilgiFormu2Model.Personel" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <AssociationConnector Association="PersonelBilgiFormu2Model.FK__Belgeler__Person__3F466844" ManuallyRouted="false" />
+        <AssociationConnector Association="PersonelBilgiFormu2Model.FK__IsBilgisi__Perso__3C69FB99" ManuallyRouted="false" />
+        <AssociationConnector Association="PersonelBilgiFormu2Model.FK__OkulBilgi__Perso__398D8EEE" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

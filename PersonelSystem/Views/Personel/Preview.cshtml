@@ -1,0 +1,65 @@
+﻿@model PersonelSystem.Personel
+@{
+    ViewBag.Title = "Önizleme";
+    var okulAdlari = ViewBag.OkulAdlari as string[];
+    var bolumler = ViewBag.Bolumler as string[];
+    var mezunYillari = ViewBag.Yillar as string[];
+
+    var firmalar = ViewBag.Firmalar as string[];
+    var pozisyonlar = ViewBag.Pozisyonlar as string[];
+    var isYillari = ViewBag.YilIs as string[];
+}
+
+<div class="container mt-4">
+    <h2>Önizleme Sayfası</h2>
+    <hr />
+    <h4>Kimlik Bilgileri</h4>
+    <p><strong>Ad:</strong> @Model.Ad</p>
+    <p><strong>Soyad:</strong> @Model.Soyad</p>
+    <p><strong>Doğum Tarihi:</strong> @Model.DogumTarihi</p>
+    <p><strong>Cinsiyet:</strong> @Model.Cinsiyet</p>
+    <p><strong>Medeni Durum:</strong> @Model.MedeniDurum</p>
+    <p><strong>Adres:</strong> @Model.Adres</p>
+    <p><strong>Telefon:</strong> @Model.Telefon</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+
+    <hr />
+    <h4>Okul Bilgileri</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Okul</th><th>Bölüm</th><th>Yıl</th></tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; okulAdlari != null && i < okulAdlari.Length; i++)
+            {
+                <tr>
+                    <td>@okulAdlari[i]</td>
+                    <td>@bolumler[i]</td>
+                    <td>@mezunYillari[i]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+    <h4>İş Bilgileri</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Firma</th><th>Pozisyon</th><th>Yıl</th></tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; firmalar != null && i < firmalar.Length; i++)
+            {
+                <tr>
+                    <td>@bolumler[i]</td>
+                    <td>@pozisyonlar[i]</td>
+                    <td>@isYillari[i]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+
+    <a href="@Url.Action("Create", "Personel")" class="btn btn-secondary">Geri Dön ve Düzenle</a>
+</div>

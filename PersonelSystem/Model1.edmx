@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PersonelBilgiFormu2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Belgeler">
+          <Key>
+            <PropertyRef Name="BelgeId" />
+          </Key>
+          <Property Name="BelgeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PersonelId" Type="int" />
+          <Property Name="DosyaAdi" Type="nvarchar" MaxLength="255" />
+          <Property Name="DosyaYolu" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="IsBilgisi">
+          <Key>
+            <PropertyRef Name="IsId" />
+          </Key>
+          <Property Name="IsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PersonelId" Type="int" />
+          <Property Name="FirmaAdi" Type="nvarchar" MaxLength="100" />
+          <Property Name="Gorev" Type="nvarchar" MaxLength="100" />
+          <Property Name="CalismaYili" Type="int" />
+        </EntityType>
+        <EntityType Name="OkulBilgisi">
+          <Key>
+            <PropertyRef Name="OkulId" />
+          </Key>
+          <Property Name="OkulId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PersonelId" Type="int" />
+          <Property Name="OkulAdi" Type="nvarchar" MaxLength="100" />
+          <Property Name="Bolum" Type="nvarchar" MaxLength="100" />
+          <Property Name="MezuniyetYili" Type="int" />
+        </EntityType>
+        <EntityType Name="Personel">
+          <Key>
+            <PropertyRef Name="PersonelId" />
+          </Key>
+          <Property Name="PersonelId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="50" />
+          <Property Name="Soyad" Type="nvarchar" MaxLength="50" />
+          <Property Name="DogumTarihi" Type="date" />
+          <Property Name="Cinsiyet" Type="nvarchar" MaxLength="10" />
+          <Property Name="MedeniDurum" Type="nvarchar" MaxLength="20" />
+          <Property Name="Adres" Type="nvarchar(max)" />
+          <Property Name="Telefon" Type="nvarchar" MaxLength="20" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="ResimYolu" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK__Belgeler__Person__3F466844">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="Belgeler" Type="Self.Belgeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="Belgeler">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__IsBilgisi__Perso__3C69FB99">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="IsBilgisi" Type="Self.IsBilgisi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="IsBilgisi">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OkulBilgi__Perso__398D8EEE">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="OkulBilgisi" Type="Self.OkulBilgisi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="OkulBilgisi">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PersonelBilgiFormu2ModelStoreContainer">
+          <EntitySet Name="Belgeler" EntityType="Self.Belgeler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IsBilgisi" EntityType="Self.IsBilgisi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OkulBilgisi" EntityType="Self.OkulBilgisi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Personel" EntityType="Self.Personel" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Belgeler__Person__3F466844" Association="Self.FK__Belgeler__Person__3F466844">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="Belgeler" EntitySet="Belgeler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__IsBilgisi__Perso__3C69FB99" Association="Self.FK__IsBilgisi__Perso__3C69FB99">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="IsBilgisi" EntitySet="IsBilgisi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OkulBilgi__Perso__398D8EEE" Association="Self.FK__OkulBilgi__Perso__398D8EEE">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="OkulBilgisi" EntitySet="OkulBilgisi" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PersonelBilgiFormu2Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Belgeler">
+          <Key>
+            <PropertyRef Name="BelgeId" />
+          </Key>
+          <Property Name="BelgeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonelId" Type="Int32" />
+          <Property Name="DosyaAdi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DosyaYolu" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Personel" Relationship="Self.FK__Belgeler__Person__3F466844" FromRole="Belgeler" ToRole="Personel" />
+        </EntityType>
+        <EntityType Name="IsBilgisi">
+          <Key>
+            <PropertyRef Name="IsId" />
+          </Key>
+          <Property Name="IsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonelId" Type="Int32" />
+          <Property Name="FirmaAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Gorev" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CalismaYili" Type="Int32" />
+          <NavigationProperty Name="Personel" Relationship="Self.FK__IsBilgisi__Perso__3C69FB99" FromRole="IsBilgisi" ToRole="Personel" />
+        </EntityType>
+        <EntityType Name="OkulBilgisi">
+          <Key>
+            <PropertyRef Name="OkulId" />
+          </Key>
+          <Property Name="OkulId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonelId" Type="Int32" />
+          <Property Name="OkulAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Bolum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MezuniyetYili" Type="Int32" />
+          <NavigationProperty Name="Personel" Relationship="Self.FK__OkulBilgi__Perso__398D8EEE" FromRole="OkulBilgisi" ToRole="Personel" />
+        </EntityType>
+        <EntityType Name="Personel">
+          <Key>
+            <PropertyRef Name="PersonelId" />
+          </Key>
+          <Property Name="PersonelId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Soyad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DogumTarihi" Type="DateTime" Precision="0" />
+          <Property Name="Cinsiyet" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MedeniDurum" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Adres" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Telefon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ResimYolu" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Belgeler" Relationship="Self.FK__Belgeler__Person__3F466844" FromRole="Personel" ToRole="Belgeler" />
+          <NavigationProperty Name="IsBilgisi" Relationship="Self.FK__IsBilgisi__Perso__3C69FB99" FromRole="Personel" ToRole="IsBilgisi" />
+          <NavigationProperty Name="OkulBilgisi" Relationship="Self.FK__OkulBilgi__Perso__398D8EEE" FromRole="Personel" ToRole="OkulBilgisi" />
+        </EntityType>
+        <Association Name="FK__Belgeler__Person__3F466844">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="Belgeler" Type="Self.Belgeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="Belgeler">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__IsBilgisi__Perso__3C69FB99">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="IsBilgisi" Type="Self.IsBilgisi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="IsBilgisi">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OkulBilgi__Perso__398D8EEE">
+          <End Role="Personel" Type="Self.Personel" Multiplicity="0..1" />
+          <End Role="OkulBilgisi" Type="Self.OkulBilgisi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personel">
+              <PropertyRef Name="PersonelId" />
+            </Principal>
+            <Dependent Role="OkulBilgisi">
+              <PropertyRef Name="PersonelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PersonelBilgiFormu2Entities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Belgeler" EntityType="Self.Belgeler" />
+          <EntitySet Name="IsBilgisi" EntityType="Self.IsBilgisi" />
+          <EntitySet Name="OkulBilgisi" EntityType="Self.OkulBilgisi" />
+          <EntitySet Name="Personel" EntityType="Self.Personel" />
+          <AssociationSet Name="FK__Belgeler__Person__3F466844" Association="Self.FK__Belgeler__Person__3F466844">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="Belgeler" EntitySet="Belgeler" />
+          </AssociationSet>
+          <AssociationSet Name="FK__IsBilgisi__Perso__3C69FB99" Association="Self.FK__IsBilgisi__Perso__3C69FB99">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="IsBilgisi" EntitySet="IsBilgisi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OkulBilgi__Perso__398D8EEE" Association="Self.FK__OkulBilgi__Perso__398D8EEE">
+            <End Role="Personel" EntitySet="Personel" />
+            <End Role="OkulBilgisi" EntitySet="OkulBilgisi" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PersonelBilgiFormu2ModelStoreContainer" CdmEntityContainer="PersonelBilgiFormu2Entities1">
+          <EntitySetMapping Name="Belgeler">
+            <EntityTypeMapping TypeName="PersonelBilgiFormu2Model.Belgeler">
+              <MappingFragment StoreEntitySet="Belgeler">
+                <ScalarProperty Name="BelgeId" ColumnName="BelgeId" />
+                <ScalarProperty Name="PersonelId" ColumnName="PersonelId" />
+                <ScalarProperty Name="DosyaAdi" ColumnName="DosyaAdi" />
+                <ScalarProperty Name="DosyaYolu" ColumnName="DosyaYolu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IsBilgisi">
+            <EntityTypeMapping TypeName="PersonelBilgiFormu2Model.IsBilgisi">
+              <MappingFragment StoreEntitySet="IsBilgisi">
+                <ScalarProperty Name="IsId" ColumnName="IsId" />
+                <ScalarProperty Name="PersonelId" ColumnName="PersonelId" />
+                <ScalarProperty Name="FirmaAdi" ColumnName="FirmaAdi" />
+                <ScalarProperty Name="Gorev" ColumnName="Gorev" />
+                <ScalarProperty Name="CalismaYili" ColumnName="CalismaYili" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OkulBilgisi">
+            <EntityTypeMapping TypeName="PersonelBilgiFormu2Model.OkulBilgisi">
+              <MappingFragment StoreEntitySet="OkulBilgisi">
+                <ScalarProperty Name="OkulId" ColumnName="OkulId" />
+                <ScalarProperty Name="PersonelId" ColumnName="PersonelId" />
+                <ScalarProperty Name="OkulAdi" ColumnName="OkulAdi" />
+                <ScalarProperty Name="Bolum" ColumnName="Bolum" />
+                <ScalarProperty Name="MezuniyetYili" ColumnName="MezuniyetYili" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Personel">
+            <EntityTypeMapping TypeName="PersonelBilgiFormu2Model.Personel">
+              <MappingFragment StoreEntitySet="Personel">
+                <ScalarProperty Name="PersonelId" ColumnName="PersonelId" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="DogumTarihi" ColumnName="DogumTarihi" />
+                <ScalarProperty Name="Cinsiyet" ColumnName="Cinsiyet" />
+                <ScalarProperty Name="MedeniDurum" ColumnName="MedeniDurum" />
+                <ScalarProperty Name="Adres" ColumnName="Adres" />
+                <ScalarProperty Name="Telefon" ColumnName="Telefon" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ResimYolu" ColumnName="ResimYolu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

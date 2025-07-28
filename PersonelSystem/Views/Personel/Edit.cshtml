@@ -1,0 +1,176 @@
+﻿@model PersonelSystem.Personel
+
+@{
+    ViewBag.Title = "Personel Güncelle";
+}
+
+<div class="container mt-5">
+    <h2>Personel Güncelle</h2>
+
+    @using (Html.BeginForm("Edit", "Personel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PersonelId)
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Ad)
+            @Html.TextBoxFor(m => m.Ad, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Soyad)
+            @Html.TextBoxFor(m => m.Soyad, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.DogumTarihi)
+            @Html.TextBoxFor(m => m.DogumTarihi, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        </div>
+
+        <fieldset class="mb-3">
+            <legend class="col-form-label pt-0">Cinsiyet</legend>
+            <div class="form-check">
+                @Html.RadioButtonFor(m => m.Cinsiyet, "Erkek", new { @class = "form-check-input", id = "erkek" }) Erkek
+            </div>
+            <div class="form-check">
+                @Html.RadioButtonFor(m => m.Cinsiyet, "Kadın", new { @class = "form-check-input", id = "kadin" }) Kadın
+            </div>
+        </fieldset>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.MedeniDurum)
+            @Html.DropDownListFor(m => m.MedeniDurum, new SelectList(new[] { "Bekar", "Evli", "Boşanmış" }, Model.MedeniDurum), "Seçiniz", new { @class = "form-select" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Adres)
+            @Html.TextAreaFor(m => m.Adres, new { @class = "form-control", rows = 3 })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Telefon)
+            @Html.TextBoxFor(m => m.Telefon, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+        </div>
+
+        <div class="mb-3">
+            <label for="Resim">Yeni Fotoğraf Yükle</label>
+            <input type="file" name="Resim" class="form-control" accept="image/*" />
+            @if (!string.IsNullOrEmpty(Model.ResimYolu))
+            {
+                <div class="mt-2">
+                    <img src="@Model.ResimYolu" alt="Fotoğraf" style="max-width: 150px; border:1px solid #ccc;" />
+                </div>
+            }
+        </div>
+        <hr />
+        <!-- Okul Bilgileri -->
+        <h4>Okul Bilgileri</h4>
+        <table class="table table-bordered" id="okulTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Okul Adı</th>
+                    <th>Bölüm</th>
+                    <th>Yıl</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var okul in Model.OkulBilgisi.ToList())
+                {
+                    <tr>
+                        <td><input type="text" name="OkulAdi[]" value="@okul.OkulAdi" class="form-control" /></td>
+                        <td><input type="text" name="Bolum[]" value="@okul.Bolum" class="form-control" /></td>
+                        <td><input type="number" name="Yil[]" value="@okul.MezuniyetYili" class="form-control" /></td>
+                        <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" id="okulEkle" class="btn btn-success mb-4">+ Yeni Okul Ekle</button>
+
+        <!-- İş Bilgileri -->
+        <h4>İş Bilgileri</h4>
+        <table class="table table-bordered" id="isTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Firma Adı</th>
+                    <th>Pozisyon</th>
+                    <th>Yıl</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var isbilgi in Model.IsBilgisi.ToList())
+                {
+                    <tr>
+                        <td><input type="text" name="Firma[]" value="@isbilgi.FirmaAdi" class="form-control" /></td>
+                        <td><input type="text" name="Pozisyon[]" value="@isbilgi.Gorev" class="form-control" /></td>
+                        <td><input type="number" name="YilIs[]" value="@isbilgi.CalismaYili" class="form-control" /></td>
+                        <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" id="isEkle" class="btn btn-success mb-4">+ Yeni İş Ekle</button>
+        <hr />
+        <h4>Belgeler</h4>
+        <div class="mb-3">
+            <label>Yeni PDF Belgeleri Yükle</label>
+            <input type="file" name="PdfFiles" class="form-control" multiple accept=".pdf" />
+        </div>
+        if (Model.Belgeler != null && Model.Belgeler.Any())
+        {
+            <ul class="list-group mt-2">
+                @foreach (var belge in Model.Belgeler)
+                {
+                    <li class="list-group-item">
+                        <a href="@belge.DosyaYolu" target="_blank">@belge.DosyaAdi</a>
+                    </li>
+                }
+            </ul>
+        }
+
+
+
+
+
+
+        <button type="submit" class="btn btn-success">Güncelle</button>
+        <a href="@Url.Action("Index", "Personel")" class="btn btn-secondary">Listeye Dön</a>
+    }
+</div>
+<script>
+    // Okul satırı ekle
+    document.getElementById("okulEkle").addEventListener("click", function () {
+        const row = `<tr>
+                        <td><input type="text" name="OkulAdi[]" class="form-control" /></td>
+                        <td><input type="text" name="Bolum[]" class="form-control" /></td>
+                        <td><input type="number" name="Yil[]" class="form-control" /></td>
+                        <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                    </tr>`;
+        document.querySelector("#okulTable tbody").insertAdjacentHTML("beforeend", row);
+    });
+
+    // İş satırı ekle
+    document.getElementById("isEkle").addEventListener("click", function () {
+        const row = `<tr>
+                        <td><input type="text" name="Firma[]" class="form-control" /></td>
+                        <td><input type="text" name="Pozisyon[]" class="form-control" /></td>
+                        <td><input type="number" name="YilIs[]" class="form-control" /></td>
+                        <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                    </tr>`;
+        document.querySelector("#isTable tbody").insertAdjacentHTML("beforeend", row);
+    });
+
+    // Satır silme
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("sil")) {
+            e.target.closest("tr").remove();
+        }
+    });
+</script>

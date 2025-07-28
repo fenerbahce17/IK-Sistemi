@@ -1,0 +1,326 @@
+﻿@model PersonelSystem.Personel
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Personel Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    
+    <div class="container mt-5 px-3 px-md-5">
+
+        <div class="card shadow-sm p-4 rounded bg-white bg-opacity-75">
+
+
+            <h1 class="text-primary">Personel Kayıt</h1>
+            <h2 class="mb-4">@ViewBag.Title</h2>
+
+            @using (Html.BeginForm("Create", "Personel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @* Mesaj varsa göster *@
+                if (!string.IsNullOrEmpty(ViewBag.Mesaj as string))
+                {
+                    <div class="alert alert-info">@ViewBag.Mesaj</div>
+                }
+
+        <div class="card border-0 card shadow-sm p-4 rounded bg-white bg-opacity-75 center-card">
+
+
+            <div class="row g-3 d-flex justify-content-center px-3 px-md-5">
+
+
+                <!-- Ad Soyad -->
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        @Html.TextBoxFor(m => m.Ad, new { @class = "form-control", id = "Ad", placeholder = "Ad" })
+                        <label for="Ad">Ad</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        @Html.TextBoxFor(m => m.Soyad, new { @class = "form-control", id = "Soyad", placeholder = "Soyad" })
+                        <label for="Soyad">Soyad</label>
+                    </div>
+                </div>
+
+                <!-- Doğum Tarihi ve Cinsiyet -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        @Html.TextBoxFor(m => m.DogumTarihi, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "DogumTarihi", placeholder = "Doğum Tarihi" })
+                        <label for="DogumTarihi">Doğum Tarihi</label>
+                    </div>
+                </div>
+                <!-- Cinsiyet -->
+                <div class="col-md-6">
+                    <label class="form-label d-block mb-2">Cinsiyet</label>
+                    <div class="d-flex gap-3 ps-2">
+                        <div class="form-check">
+                            @Html.RadioButtonFor(m => m.Cinsiyet, "Erkek", new { @class = "form-check-input", id = "CinsiyetErkek" })
+                            <label class="form-check-label" for="CinsiyetErkek">Erkek</label>
+                        </div>
+                        <div class="form-check">
+                            @Html.RadioButtonFor(m => m.Cinsiyet, "Kadın", new { @class = "form-check-input", id = "CinsiyetKadin" })
+                            <label class="form-check-label" for="CinsiyetKadin">Kadın</label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Medeni Durum ve Telefon -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        @Html.DropDownListFor(m => m.MedeniDurum, new SelectList(new[] { "Bekar", "Evli", "Boşanmış" }), "Seçiniz", new { @class = "form-select", id = "MedeniDurum" })
+                        <label for="MedeniDurum">Medeni Durum</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        @Html.TextBoxFor(m => m.Telefon, new { @class = "form-control", id = "Telefon", placeholder = "Telefon" })
+                        <label for="Telefon">Telefon</label>
+                    </div>
+                </div>
+
+                <!-- Email ve Adres -->
+                <div class="col-6">
+                    <div class="form-floating">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "Email", type = "email", placeholder = "E-posta" })
+                        <label for="Email">E-posta</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-floating">
+                        @Html.TextAreaFor(m => m.Adres, new { @class = "form-control", rows = 3, id = "Adres", placeholder = "Adres", style = "height: 100px" })
+                        <label for="Adres">Adres</label>
+                    </div>
+                </div>
+
+                <!-- Fotoğraf Yükleme -->
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label for="fotoInput" class="form-label d-block">
+                            <i class="bi bi-camera me-2"></i>Profil Fotoğrafı
+                            <span class="text-muted small ms-1">(JPEG, PNG - Max 2MB)</span>
+                        </label>
+                        <input type="file" name="Resim" id="fotoInput" accept="image/*" class="form-control" />
+                        <div class="form-text">Lütfen net ve profesyonel bir fotoğraf yükleyin.</div>
+                    </div>
+                    <div id="previewContainer" class="text-lg-center mt-3" style="display:none;">
+                        <div class="position-relative d-inline-block">
+                            <img id="previewImage" src="#" alt="Önizleme"
+                                 class="rounded-circle border border-3 border-primary"
+                                 style="width: 150px; height: 150px; object-fit: cover;" />
+                            <button type="button" id="removeImage"
+                                    class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <hr class="my-4 border-primary opacity-25" />
+
+            <!-- Okul Bilgileri -->
+            <div class="section-header mb-4">
+                <h4 class="text-primary">
+                    <i class="bi bi-book me-2"></i>Eğitim Bilgileri
+                </h4>
+                <p class="text-muted">Lütfen tamamladığınız eğitimleri kronolojik sırayla ekleyin.</p>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="okulTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Okul Adı</th>
+                            <th>Bölüm</th>
+                            <th>Yıl</th>
+                            <th width="50">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <button type="button" id="okulEkle" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i>Yeni Eğitim Ekle
+            </button>
+
+            <!-- İş Geçmişi -->
+            <div class="section-header mb-4 mt-5">
+                <h4 class="text-primary">
+                    <i class="bi bi-briefcase me-2"></i>İş Deneyimi
+                </h4>
+                <p class="text-muted">En son çalıştığınız işten başlayarak ekleyin.</p>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="isTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Firma</th>
+                            <th>Pozisyon</th>
+                            <th>Yıl</th>
+                            <th width="50">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <button type="button" id="isEkle" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i>Yeni İş Deneyimi Ekle
+            </button>
+
+            <!-- PDF Yükleme -->
+            <div class="section-header mb-4 mt-5">
+                <h4 class="text-primary">
+                    <i class="bi bi-file-earmark-pdf me-2"></i>Referans Belgeleri
+                </h4>
+                <p class="text-muted">CV, sertifika veya referans mektuplarınızı yükleyebilirsiniz.</p>
+            </div>
+            <div class="file-upload-area border rounded p-3 bg-light">
+                <div class="mb-3">
+                    <label class="form-label d-block">
+                        <i class="bi bi-upload me-2"></i>PDF Dosyaları Yükle
+                        <span class="text-muted small ms-1">(Max 5MB each)</span>
+                    </label>
+                    <input type="file" name="PdfFiles" multiple accept="application/pdf" class="form-control" />
+                    <div class="form-text">Birden fazla dosya seçmek için CTRL tuşunu basılı tutun.</div>
+                </div>
+                <div id="pdfPreview" class="d-flex flex-wrap gap-3 mt-3"></div>
+            </div>
+
+            <!-- Form Butonları -->
+            <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                <button type="submit" name="action" value="preview" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-eye me-1"></i>Önizleme
+                </button>
+                <button type="submit" name="action" value="save" class="btn btn-primary px-4">
+                    <i class="bi bi-save me-1"></i>Kaydet
+                </button>
+            </div>
+
+        
+            }
+        </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // Okul satırı ekle
+            document.getElementById("okulEkle").addEventListener("click", function () {
+                const row = `<tr>
+                                            <td><input type="text" name="OkulAdi[]" class="form-control" /></td>
+                                            <td><input type="text" name="Bolum[]" class="form-control" /></td>
+                                            <td><input type="text" name="Yil[]" class="form-control" /></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                                        </tr>`;
+                document.querySelector("#okulTable tbody").insertAdjacentHTML("beforeend", row);
+            });
+
+            // İş satırı ekle
+            document.getElementById("isEkle").addEventListener("click", function () {
+                const row = `<tr>
+                                            <td><input type="text" name="Firma[]" class="form-control" /></td>
+                                            <td><input type="text" name="Pozisyon[]" class="form-control" /></td>
+                                            <td><input type="text" name="YilIs[]" class="form-control" /></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm sil">Sil</button></td>
+                                        </tr>`;
+                document.querySelector("#isTable tbody").insertAdjacentHTML("beforeend", row);
+            });
+
+            // Satır silme
+            document.addEventListener("click", function (e) {
+                if (e.target.classList.contains("sil")) {
+                    e.target.closest("tr").remove();
+                }
+            });
+
+            // Fotoğraf önizleme
+            document.getElementById("fotoInput").addEventListener("change", function (e) {
+                const file = e.target.files[0];
+                const previewContainer = document.getElementById("previewContainer");
+                const previewImage = document.getElementById("previewImage");
+
+                if (file && file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = "block";
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    previewContainer.style.display = "none";
+                }
+            });
+
+            // Önizlemeyi kaldır
+            document.getElementById("removeImage").addEventListener("click", function () {
+                document.getElementById("fotoInput").value = "";
+                document.getElementById("previewContainer").style.display = "none";
+            });
+            document.querySelector('input[name="PdfFiles"]').addEventListener("change", function (e) {
+                const previewDiv = document.getElementById("pdfPreview");
+                previewDiv.innerHTML = ""; // Önceki içerikleri temizle
+
+                Array.from(e.target.files).forEach((file, index) => {
+                    if (file.type === "application/pdf") {
+                        const fileReader = new FileReader();
+
+                        fileReader.onload = function (e) {
+                            // Bootstrap card ile PDF embed
+                            const card = document.createElement("div");
+                            card.classList.add("card", "shadow-sm");
+                            card.style.width = "300px";
+
+                            const cardBody = document.createElement("div");
+                            cardBody.classList.add("card-body", "p-2");
+
+                            const embed = document.createElement("embed");
+                            embed.src = e.target.result;
+                            embed.type = "application/pdf";
+                            embed.style.width = "100%";
+                            embed.style.height = "400px";
+
+                            cardBody.appendChild(embed);
+                            card.appendChild(cardBody);
+                            previewDiv.appendChild(card);
+                        };
+
+                        fileReader.readAsDataURL(file);
+                    }
+                });
+            });
+
+        </script>
+
+
+
+</body>    
+
+
+</html>
+<style>
+    .center-card {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 900px;
+    }
+
+        .center-card .row > div {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+</style>
+
+
+
+
