@@ -57,16 +57,30 @@
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
         </div>
 
+        <!-- ✅ Resim Yükleme -->
         <div class="mb-3">
-            <label for="Resim">Yeni Fotoğraf Yükle</label>
-            <input type="file" name="Resim" class="form-control" accept="image/*" />
+            <label for="ResimInput">Yeni Fotoğraf Yükle</label>
+            <input type="file" name="Resim" id="ResimInput" class="form-control" accept="image/*" />
+            <div class="form-text">Yüklediğiniz resim otomatik olarak aşağıda önizlenecek. (150x150)</div>
+
             @if (!string.IsNullOrEmpty(Model.ResimYolu))
             {
-                <div class="mt-2">
-                    <img src="@Model.ResimYolu" alt="Fotoğraf" style="max-width: 150px; border:1px solid #ccc;" />
+                <div class="text-center mt-3">
+                    <img id="resimOnizleme" src="@Url.Content(Model.ResimYolu)"
+                         class="rounded-circle border border-2 border-primary"
+                         style="width: 150px; height: 150px; object-fit: cover;" alt="Profil Fotoğrafı" />
+                </div>
+            }
+            else
+            {
+                <div class="text-center mt-3" style="display:none;" id="bosResimOnizleme">
+                    <img id="resimOnizleme" src="#"
+                         class="rounded-circle border border-2 border-primary"
+                         style="width: 150px; height: 150px; object-fit: cover;" alt="Önizleme" />
                 </div>
             }
         </div>
+
         <hr />
         <!-- Okul Bilgileri -->
         <h4>Okul Bilgileri</h4>
@@ -117,35 +131,71 @@
             </tbody>
         </table>
         <button type="button" id="isEkle" class="btn btn-success mb-4">+ Yeni İş Ekle</button>
+
+
+
+
         <hr />
+        <!-- Belgeler -->
+        <!-- Belgeler bölümünü şu şekilde güncelleyin: -->
+        <!-- Belgeler -->
         <h4>Belgeler</h4>
-        <div class="mb-3">
-            <label>Yeni PDF Belgeleri Yükle</label>
-            <input type="file" name="PdfFiles" class="form-control" multiple accept=".pdf" />
+        <!-- PDF Yükleme -->
+        <div class="file-upload-area border rounded p-3 bg-light">
+            <div class="mb-3">
+                <label class="form-label d-block">
+                    <i class="bi bi-upload me-2"></i>PDF Dosyaları Yükle
+                    <span class="text-muted small ms-1">(Max 5MB each)</span>
+                </label>
+                <input type="file" id="pdfUploader" name="PdfFiles" multiple accept="application/pdf" class="form-control" />
+                <div class="form-text">Birden fazla dosya seçmek için CTRL tuşunu basılı tutun.</div>
+            </div>
+            <div id="pdfPreview" class="d-flex flex-wrap gap-3 mt-3"></div>
         </div>
+
         if (Model.Belgeler != null && Model.Belgeler.Any())
         {
-            <ul class="list-group mt-2">
-                @foreach (var belge in Model.Belgeler)
-                {
-                    <li class="list-group-item">
-                        <a href="@belge.DosyaYolu" target="_blank">@belge.DosyaAdi</a>
-                    </li>
-                }
-            </ul>
+            <div class="mt-4">
+                <label class="form-label">Yüklenmiş Belgeler:</label>
+                <div class="row">
+                    @foreach (var belge in Model.Belgeler)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-3" id="belge-card-@belge.BelgeId">
+                            <div class="card h-100 belge-container">
+                                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                    <a href="@Url.Content(belge.DosyaYolu)" target="_blank" class="text-decoration-none text-truncate">
+                                        <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+                                        @belge.DosyaAdi
+                                    </a>
+                                    <!-- Sil Butonu -->
+                                    <button type="button" class="btn btn-outline-danger btn-sm belge-sil-btn" data-belge-id="@belge.BelgeId">
+                                        <i class="bi bi-x-lg"></i> Sil
+                                    </button>
+                                </div>
+                                <div class="card-body p-0 pdf-container">
+                                    <object data="@Url.Content(belge.DosyaYolu)" type="application/pdf" class="pdf-object w-100 h-100">
+                                        <p>PDF görüntülenemiyor. <a href="@Url.Content(belge.DosyaYolu)" download="@belge.DosyaAdi">İndir</a></p>
+                                    </object>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <!-- Silinecek belge id'leri burada birikecek -->
+                    <div id="silinecekBelgelerContainer"></div>
+
+                </div>
+            </div>
         }
 
-
-
-
-
-
-        <button type="submit" class="btn btn-success">Güncelle</button>
-        <a href="@Url.Action("Index", "Personel")" class="btn btn-secondary">Listeye Dön</a>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success">Güncelle</button>
+            <a href="@Url.Action("Index", "Personel")" class="btn btn-secondary ms-2">Vazgeç</a>
+        </div>
     }
 </div>
+
 <script>
-    // Okul satırı ekle
+    // Okul ekle
     document.getElementById("okulEkle").addEventListener("click", function () {
         const row = `<tr>
                         <td><input type="text" name="OkulAdi[]" class="form-control" /></td>
@@ -156,7 +206,7 @@
         document.querySelector("#okulTable tbody").insertAdjacentHTML("beforeend", row);
     });
 
-    // İş satırı ekle
+    // İş ekle
     document.getElementById("isEkle").addEventListener("click", function () {
         const row = `<tr>
                         <td><input type="text" name="Firma[]" class="form-control" /></td>
@@ -167,10 +217,162 @@
         document.querySelector("#isTable tbody").insertAdjacentHTML("beforeend", row);
     });
 
-    // Satır silme
+    // Satır sil
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("sil")) {
             e.target.closest("tr").remove();
         }
     });
+
+    // Resim önizleme
+    document.getElementById("ResimInput").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const img = document.getElementById("resimOnizleme");
+                img.src = evt.target.result;
+                document.getElementById("bosResimOnizleme")?.style?.setProperty("display", "block");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // PDF Yükleme ve Önizleme
+    document.getElementById('pdfUploader').addEventListener('change', function (e) {
+        const previewDiv = document.getElementById('pdfPreview');
+        previewDiv.innerHTML = '';
+
+        const files = Array.from(e.target.files);
+        const invalidFiles = files.filter(file => file.type !== "application/pdf" || file.size > 5 * 1024 * 1024);
+
+        if (invalidFiles.length > 0) {
+            alert("Lütfen sadece 5MB'den küçük PDF dosyaları seçin!");
+            e.target.value = "";
+            return;
+        }
+
+        files.forEach((file, index) => {
+            const fileURL = URL.createObjectURL(file);
+
+            const cardWrapper = document.createElement("div");
+            cardWrapper.className = "col-md-6 col-lg-4 mb-3";
+
+            const card = document.createElement("div");
+            card.className = "card h-100 belge-container";
+
+            const cardHeader = document.createElement("div");
+            cardHeader.className = "card-header d-flex justify-content-between align-items-center py-2";
+
+            const fileLink = document.createElement("a");
+            fileLink.href = fileURL;
+            fileLink.target = "_blank";
+            fileLink.className = "text-decoration-none text-truncate";
+            fileLink.innerHTML = `<i class="bi bi-file-earmark-pdf text-danger me-2"></i> ${file.name}`;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "btn btn-outline-danger btn-sm";
+            deleteBtn.innerHTML = `<i class="bi bi-x-lg"></i> Sil`;
+            deleteBtn.addEventListener("click", function () {
+                cardWrapper.remove();
+            });
+
+            cardHeader.appendChild(fileLink);
+            cardHeader.appendChild(deleteBtn);
+
+            const cardBody = document.createElement("div");
+            cardBody.className = "card-body p-0 pdf-container";
+
+            const embed = document.createElement("object");
+            embed.data = fileURL;
+            embed.type = "application/pdf";
+            embed.className = "pdf-object w-100 h-100";
+
+            const fallback = document.createElement("p");
+            fallback.innerHTML = `PDF görüntülenemiyor. <a href="${fileURL}" download="${file.name}">İndir</a>`;
+            embed.appendChild(fallback);
+
+            cardBody.appendChild(embed);
+            card.appendChild(cardHeader);
+            card.appendChild(cardBody);
+            cardWrapper.appendChild(card);
+            previewDiv.appendChild(cardWrapper);
+        });
+    });
+
+
+
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".belge-sil-btn")) {
+            const btn = e.target.closest(".belge-sil-btn");
+            const belgeId = btn.getAttribute("data-belge-id");
+
+            // Kartı görünümden kaldır
+            const card = document.getElementById(`belge-card-${belgeId}`);
+            if (card) card.remove();
+
+            // Hidden input olarak formun içine ekle
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "SilinecekBelgeler";
+            hiddenInput.value = belgeId;
+            document.getElementById("silinecekBelgelerContainer").appendChild(hiddenInput);
+        }
+    });
 </script>
+
+<style>
+    /* PDF kartları için stil */
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        padding: 0.5rem 1rem;
+    }
+
+    /* PDF önizleme container */
+    .pdf-container {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .pdf-object {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Silme işaretli belgeler için stil */
+    .belge-sil-checkbox:checked ~ .card {
+        opacity: 0.5;
+        background-color: #f8f9fa;
+    }
+
+    /* Checkbox stil */
+    .belge-sil-checkbox {
+        width: 18px;
+        height: 18px;
+        margin-top: 0;
+    }
+
+    /* Küçük ekranlar için responsive ayar */
+    @@media (max-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    /* Metin kesme için */
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+</style>

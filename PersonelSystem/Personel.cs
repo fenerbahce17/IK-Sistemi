@@ -23,6 +23,7 @@ namespace PersonelSystem
         }
     
         public int PersonelId { get; set; }
+
         public string Ad { get; set; }
         public string Soyad { get; set; }
         public Nullable<System.DateTime> DogumTarihi { get; set; }

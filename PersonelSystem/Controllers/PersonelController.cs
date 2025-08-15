@@ -91,7 +91,6 @@ namespace PersonelSystem.Controllers
         {
             if (action == "preview")
             {
-            
                 TempData["PreviewModel"] = model;
                 TempData["OkulAdlari"] = Request.Form.GetValues("OkulAdi[]");
                 TempData["Bolumler"] = Request.Form.GetValues("Bolum[]");
@@ -102,6 +101,23 @@ namespace PersonelSystem.Controllers
                 TempData["YilIs"] = Request.Form.GetValues("YilIs[]");
 
                 return RedirectToAction("Preview");
+            }
+
+            // ✅ Boş alan kontrolü (Ad, Soyad, DogumTarihi zorunlu)
+            if (string.IsNullOrWhiteSpace(model.Ad) ||
+                string.IsNullOrWhiteSpace(model.Soyad) ||
+                string.IsNullOrWhiteSpace(model.Adres) ||
+                string.IsNullOrWhiteSpace(model.Telefon) ||
+                string.IsNullOrWhiteSpace(model.MedeniDurum) ||
+                string.IsNullOrWhiteSpace(model.Email) ||
+
+
+
+
+                model.DogumTarihi == null)
+            {
+                ViewBag.Mesaj = "❌ Lütfen eksik  alanlarını doldurunuz.";
+                return View(model);
             }
 
             if (ModelState.IsValid)
@@ -120,7 +136,7 @@ namespace PersonelSystem.Controllers
                         model.ResimYolu = "/Uploads/" + dosyaAdi;
                     }
 
-                    // Personeli ekle
+
                     db.Personel.Add(model);
                     db.SaveChanges();
 
@@ -133,6 +149,13 @@ namespace PersonelSystem.Controllers
                     {
                         for (int i = 0; i < okulAdlari.Length; i++)
                         {
+                            // Boşluk kontrolü ekle
+                            if (string.IsNullOrWhiteSpace(okulAdlari[i]) && string.IsNullOrWhiteSpace(bolumler[i]) && string.IsNullOrWhiteSpace(mezunYillari[i]))
+                                continue;
+
+                            if (string.IsNullOrWhiteSpace(okulAdlari[i]) || string.IsNullOrWhiteSpace(bolumler[i]))
+                                continue;
+
                             var okul = new OkulBilgisi
                             {
                                 PersonelId = model.PersonelId,
@@ -153,6 +176,13 @@ namespace PersonelSystem.Controllers
                     {
                         for (int i = 0; i < firmalar.Length; i++)
                         {
+                            // Boşluk kontrolü ekle
+                            if (string.IsNullOrWhiteSpace(firmalar[i]) && string.IsNullOrWhiteSpace(pozisyonlar[i]) && string.IsNullOrWhiteSpace(yillar[i]))
+                                continue;
+
+                            if (string.IsNullOrWhiteSpace(firmalar[i]) || string.IsNullOrWhiteSpace(pozisyonlar[i]))
+                                continue;
+
                             var isBilgisi = new IsBilgisi
                             {
                                 PersonelId = model.PersonelId,
@@ -185,7 +215,6 @@ namespace PersonelSystem.Controllers
                             }
                         }
                     }
-                    
 
                     db.SaveChanges();
 
@@ -256,19 +285,33 @@ namespace PersonelSystem.Controllers
                 string[] bolumler = Request.Form.GetValues("Bolum[]");
                 string[] mezunYillari = Request.Form.GetValues("Yil[]");
 
-                if (okulAdlari != null)
+                if (okulAdlari != null && bolumler != null && mezunYillari != null)
                 {
-                    for (int i = 0; i < okulAdlari.Length; i++)
+                    int max = Math.Max(okulAdlari.Length, Math.Max(bolumler.Length, mezunYillari.Length));
+                    for (int i = 0; i < max; i++)
                     {
+                        var okul = i < okulAdlari.Length ? okulAdlari[i]?.Trim() : "";
+                        var bolum = i < bolumler.Length ? bolumler[i]?.Trim() : "";
+                        var yil = i < mezunYillari.Length ? mezunYillari[i]?.Trim() : "";
+
+                        // Boş satır tamamen atla
+                        if (string.IsNullOrWhiteSpace(okul) && string.IsNullOrWhiteSpace(bolum) && string.IsNullOrWhiteSpace(yil))
+                            continue;
+
+                        // Zorunlu alan kontrolü
+                        if (string.IsNullOrWhiteSpace(okul) || string.IsNullOrWhiteSpace(bolum))
+                            continue;
+
                         db.OkulBilgisi.Add(new OkulBilgisi
                         {
                             PersonelId = model.PersonelId,
-                            OkulAdi = okulAdlari[i],
-                            Bolum = bolumler[i],
-                            MezuniyetYili = string.IsNullOrEmpty(mezunYillari[i]) ? (int?)null : int.Parse(mezunYillari[i])
+                            OkulAdi = okul,
+                            Bolum = bolum,
+                            MezuniyetYili = string.IsNullOrEmpty(yil) ? (int?)null : int.Parse(yil)
                         });
                     }
                 }
+
 
                 // ✅ Eski iş bilgilerini sil
                 var eskiIsler = db.IsBilgisi.Where(x => x.PersonelId == model.PersonelId).ToList();
@@ -279,16 +322,29 @@ namespace PersonelSystem.Controllers
                 string[] pozisyonlar = Request.Form.GetValues("Pozisyon[]");
                 string[] yillar = Request.Form.GetValues("YilIs[]");
 
-                if (firmalar != null)
+                if (firmalar != null && pozisyonlar != null && yillar != null)
                 {
-                    for (int i = 0; i < firmalar.Length; i++)
+                    int max = Math.Max(firmalar.Length, Math.Max(pozisyonlar.Length, yillar.Length));
+                    for (int i = 0; i < max; i++)
                     {
+                        var firma = i < firmalar.Length ? firmalar[i]?.Trim() : "";
+                        var pozisyon = i < pozisyonlar.Length ? pozisyonlar[i]?.Trim() : "";
+                        var yil = i < yillar.Length ? yillar[i]?.Trim() : "";
+
+                        // Boş satır tamamen atla
+                        if (string.IsNullOrWhiteSpace(firma) && string.IsNullOrWhiteSpace(pozisyon) && string.IsNullOrWhiteSpace(yil))
+                            continue;
+
+                        // Zorunlu alan kontrolü
+                        if (string.IsNullOrWhiteSpace(firma) || string.IsNullOrWhiteSpace(pozisyon))
+                            continue;
+
                         db.IsBilgisi.Add(new IsBilgisi
                         {
                             PersonelId = model.PersonelId,
-                            FirmaAdi = firmalar[i],
-                            Gorev = pozisyonlar[i],
-                            CalismaYili = string.IsNullOrEmpty(yillar[i]) ? (int?)null : int.Parse(yillar[i])
+                            FirmaAdi = firma,
+                            Gorev = pozisyon,
+                            CalismaYili = string.IsNullOrEmpty(yil) ? (int?)null : int.Parse(yil)
                         });
                     }
                 }
@@ -312,7 +368,26 @@ namespace PersonelSystem.Controllers
                             });
                         }
                     }
-                } 
+                }
+                var silinecekBelgeler = Request.Form.GetValues("SilinecekBelgeler");
+                if (silinecekBelgeler != null)
+                {
+                    foreach (var id in silinecekBelgeler)
+                    {
+                        int belgeId = int.Parse(id);
+                        var belge = db.Belgeler.Find(belgeId);
+                        if (belge != null)
+                        {
+                            // Dosya varsa fiziksel olarak sil
+                            var fizikselYol = Server.MapPath(belge.DosyaYolu);
+                            if (System.IO.File.Exists(fizikselYol))
+                                System.IO.File.Delete(fizikselYol);
+
+                            db.Belgeler.Remove(belge);
+                        }
+                    }
+                }
+
 
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -325,7 +400,34 @@ namespace PersonelSystem.Controllers
         }
 
 
- 
+        [HttpPost]
+        public JsonResult BelgeSil(int id)
+        {
+            try
+            {
+                var belge = db.Belgeler.Find(id);
+                if (belge == null)
+                    return Json(new { success = false, message = "Belge bulunamadı." });
+
+                // Fiziksel dosyayı sil
+                var fizikselYol = Server.MapPath(belge.DosyaYolu);
+                if (System.IO.File.Exists(fizikselYol))
+                    System.IO.File.Delete(fizikselYol);
+
+                // Veritabanından sil
+                db.Belgeler.Remove(belge);
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
 
         public ActionResult Preview()
         {
